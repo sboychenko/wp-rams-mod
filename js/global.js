@@ -84,6 +84,24 @@ jQuery(document).ready(function($) {
 	$(window).resize(function() {
 		resizeVideo(vidSelector);
 	});
+
+	// top scroll
+    $(window).scroll(function () {
+        if ($(this)
+                .scrollTop() > 100) {
+            $('.topScroll')
+                .fadeIn();
+        } else {
+            $('.topScroll')
+                .fadeOut();
+        }
+    });
+    $('.topScroll').on('click', function () {
+        $('html, body').animate({
+            scrollTop: 0
+        }, 1000);
+        return false;
+    });
 	
 	
 });

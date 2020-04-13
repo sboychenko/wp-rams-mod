@@ -8,39 +8,40 @@
 if ( ! function_exists( 'rams_setup' ) ) {
 
 	function rams_setup() {
-		
+
 		// Automatic feed
 		add_theme_support( 'automatic-feed-links' );
-		
+
 		// Post thumbnails
-		add_theme_support( 'post-thumbnails' ); 
+		add_theme_support( 'post-thumbnails' );
 		add_image_size( 'post-image', 800, 9999 );
-		
+
 		// Post formats
 		add_theme_support( 'post-formats', array( 'gallery', 'quote' ) );
-		
+
 		add_theme_support( 'title-tag' );
-			
+
 		// Jetpack infinite scroll
 		add_theme_support( 'infinite-scroll', array(
 			'container' => 'posts',
 			'footer'    => 'wrapper',
 			'type'      => 'click'
 		) );
-		
+
 		// Add nav menu
 		register_nav_menu( 'primary', __( 'Primary Menu', 'rams' ) );
-		
+		register_nav_menu('footermenu', __('Footer Menu', 'rams'));
+
 		// Make the theme translation ready
 		load_theme_textdomain( 'rams', get_template_directory() . '/languages' );
-		
+
 		$locale = get_locale();
 		$locale_file = get_template_directory() . '/languages/$locale.php';
 
 		if ( is_readable( $locale_file ) ) {
 			require_once( $locale_file );
 		}
-		
+
 	}
 	add_action( 'after_setup_theme', 'rams_setup' );
 
@@ -59,12 +60,14 @@ if ( ! function_exists( 'rams_load_javascript_files' ) ) {
 		if ( !is_admin() ) {
 			wp_register_script( 'rams_global', get_template_directory_uri() . '/js/global.js', array( 'jquery' ), '', true );
 			wp_register_script( 'rams_flexslider', get_template_directory_uri() . '/js/flexslider.min.js', array( 'jquery' ), '', true );
-			
+			wp_register_script('rams_fontawesome', 'https://use.fontawesome.com/4c4b094aad.js', array('jquery'), '', true);
+
 			wp_enqueue_script( 'rams_flexslider' );
 			wp_enqueue_script( 'rams_global' );
-			
+			wp_enqueue_script('rams_fontawesome');
+
 			if ( is_singular() && get_option( 'thread_comments' ) ) { wp_enqueue_script( 'comment-reply' ); }
-			
+
 		}
 	}
 	add_action( 'wp_enqueue_scripts', 'rams_load_javascript_files' );
@@ -95,11 +98,11 @@ if ( ! function_exists( 'rams_load_style' ) ) {
 			if ( 'off' !== $google_fonts ) {
 
 				// Register Google Fonts
-				wp_register_style( 'rams_googleFonts', '//fonts.googleapis.com/css?family=Montserrat:400,500,600,700|Crimson+Text:400,700,400italic,700italic', false, 1.0, 'all' );
+				wp_register_style( 'rams_googleFonts', '//fonts.googleapis.com/css?family=Exo+2:400,700|Roboto:400,700,400i,700i&subset=cyrillic', false, 1.0, 'all' );
 				$dependencies[] = 'rams_googleFonts';
 
 			}
-			
+
 			wp_enqueue_style( 'rams_style', get_stylesheet_uri(), $dependencies );
 
 		}
@@ -129,7 +132,7 @@ if ( ! function_exists( 'rams_add_editor_styles' ) ) {
 
 		if ( 'off' !== $google_fonts ) {
 
-			$font_url = '//fonts.googleapis.com/css?family=Montserrat:400,500,600,700|Crimson+Text:400,700,400italic,700italic';
+			$font_url = '//fonts.googleapis.com/css?family=Exo+2:400,700|Roboto:400,700,400i,700i&subset=cyrillic';
 			add_editor_style( str_replace( ',', '%2C', $font_url ) );
 
 		}
@@ -210,7 +213,7 @@ if ( ! function_exists( 'rams_custom_more_link' ) ) {
 if ( ! function_exists( 'rams_body_post_class' ) ) {
 
 	function rams_body_post_class( $classes ) {
-		
+
 		$classes[] = has_post_thumbnail() ? 'has-featured-image' : 'no-featured-image';
 
 		return $classes;
@@ -228,7 +231,7 @@ if ( ! function_exists( 'rams_body_post_class' ) ) {
 
 if ( ! function_exists( 'rams_admin_css' ) ) {
 
-	function rams_admin_css() { 
+	function rams_admin_css() {
 	echo '<style type="text/css">
 
 		#postimagediv #set-post-thumbnail img {
@@ -263,31 +266,31 @@ if ( ! function_exists( 'rams_flexslider' ) ) {
 			'post_status'    => null,
 			'post_mime_type' => 'image',
 		) ) ) { ?>
-		
+
 			<div class="flexslider">
-			
+
 				<ul class="slides">
-		
+
 					<?php foreach( $images as $image ) :
-						
+
 						global $attachment_id;
-						
+
 						$default_attr = array(
 							'alt'   => trim(strip_tags( get_post_meta( $attachment_id, '_wp_attachment_image_alt', true ) ) ),
 						);
-					
+
 						$attimg = wp_get_attachment_image( $image->ID, $size, $default_attr ); ?>
-						
+
 						<li>
 							<?php echo $attimg; ?>
 						</li>
-						
+
 					<?php endforeach; ?>
-			
+
 				</ul>
-				
+
 			</div><?php
-			
+
 		}
 	}
 
@@ -306,11 +309,11 @@ if ( ! function_exists( 'rams_comment' ) ) {
 			case 'pingback' :
 			case 'trackback' :
 		?>
-		
+
 			<li <?php comment_class(); ?> id="comment-<?php comment_ID(); ?>">
-			
+
 				<?php __( 'Pingback:', 'rams' ); ?> <?php comment_author_link(); ?> <?php edit_comment_link( __( '(Edit)', 'rams' ), '<span class="edit-link">', '</span>' ); ?>
-				
+
 			</li>
 		<?php
 				break;
@@ -318,57 +321,57 @@ if ( ! function_exists( 'rams_comment' ) ) {
 			global $post;
 		?>
 		<li <?php comment_class(); ?> id="li-comment-<?php comment_ID(); ?>">
-		
+
 			<div id="comment-<?php comment_ID(); ?>" class="comment">
-			
+
 				<div class="avatar-container">
 					<?php echo get_avatar( $comment, 160 ); ?>
 				</div>
-				
+
 				<div class="comment-inner">
-			
+
 					<div class="comment-header">
-												
+
 						<h4><?php echo get_comment_author_link(); ?></h4>
-						
+
 						<p class="comment-date"><a class="comment-date-link" href="<?php echo esc_url( get_comment_link( $comment->comment_ID ) ) ?>" title="<?php echo get_comment_date() . ' at ' . get_comment_time(); ?>"><?php echo get_comment_date() . '<span> &mdash; ' . get_comment_time() . '</span>'; ?></a></p>
-					
+
 					</div>
-		
+
 					<div class="comment-content post-content">
-					
+
 						<?php if ( '0' == $comment->comment_approved ) : ?>
-						
+
 							<p class="comment-awaiting-moderation"><?php __( 'Your comment is awaiting moderation.', 'rams' ); ?></p>
-							
+
 						<?php endif; ?>
-					
+
 						<?php comment_text(); ?>
-						
+
 					</div><!-- /comment-content -->
-					
+
 					<div class="comment-actions">
-						
-						<?php 
-							comment_reply_link( array_merge( $args, 
-							array( 
-								'reply_text' 	=>  	__( 'Reply', 'rams' ), 
-								'depth'			=> 		$depth, 
+
+						<?php
+							comment_reply_link( array_merge( $args,
+							array(
+								'reply_text' 	=>  	__( 'Reply', 'rams' ),
+								'depth'			=> 		$depth,
 								'max_depth' 	=> 		$args['max_depth'],
 								'before'		=>		'<p class="comment-reply">',
 								'after'			=>		'</p>'
-								) 
-							) ); 
+								)
+							) );
 						?>
-						
+
 						<?php edit_comment_link( __( 'Edit', 'rams' ), '<p class="comment-edit">', '</p>' ); ?>
-														
+
 					</div><!-- .comment-actions -->
-				
+
 				</div><!-- .comment-inner -->
-							
+
 			</div><!-- /comment-## -->
-					
+
 		<?php
 			break;
 		endswitch;
@@ -388,23 +391,23 @@ class Rams_Customize {
 
 		$wp_customize->add_section( 'rams_options', array(
 			'title' 		=> __( 'Options for Rams', 'rams' ),
-			'priority' 		=> 35, 
-			'capability' 	=> 'edit_theme_options', 
-			'description' 	=> __('Allows you to customize theme settings for Rams.', 'rams'), 
+			'priority' 		=> 35,
+			'capability' 	=> 'edit_theme_options',
+			'description' 	=> __('Allows you to customize theme settings for Rams.', 'rams'),
 		) );
-		
+
 		$wp_customize->add_setting( 'accent_color', array(
-			'default' 			=> '#6AA897', 
-			'type' 				=> 'theme_mod', 
-			'transport' 		=> 'postMessage', 
+			'default' 			=> '#333',
+			'type' 				=> 'theme_mod',
+			'transport' 		=> 'postMessage',
 			'sanitize_callback' => 'sanitize_hex_color'
 		) );
-		
+
 		$wp_customize->add_control( new WP_Customize_Color_Control( $wp_customize, 'rams_accent_color', array(
-			'label' 		=> __( 'Accent Color', 'rams' ), 
-			'section' 		=> 'colors', 
-			'settings' 		=> 'accent_color', 
-			'priority' 		=> 10, 
+			'label' 		=> __( 'Accent Color', 'rams' ),
+			'section' 		=> 'colors',
+			'settings' 		=> 'accent_color',
+			'priority' 		=> 10,
 		) ) );
 
 		//4. We can also change built-in settings by modifying properties. For instance, let's make some stuff use live preview JS...
@@ -413,7 +416,7 @@ class Rams_Customize {
 	}
 
 	public static function rams_header_output() {
-      
+
 		echo '<!-- Customizer CSS -->';
 		echo '<style type="text/css">';
 
@@ -452,9 +455,9 @@ class Rams_Customize {
 
 		echo '</style>';
 		echo '<!--/Customizer CSS-->';
-	      
+
 	}
-   
+
 	public static function rams_live_preview() {
 		wp_enqueue_script( 'rams-themecustomizer', get_template_directory_uri() . '/js/theme-customizer.js', array(  'jquery', 'customize-preview' ), '', true );
 	}
@@ -598,4 +601,65 @@ if ( ! function_exists( 'rams_block_editor_styles' ) ) :
 endif;
 
 
+////// CUSTOM Functions
+add_action('walker_nav_menu_start_el', 'nav_menu_post_count', 10, 4);
+function nav_menu_post_count($output, $item, $depth, $args)
+{
+    // Check if the item is a Category or Custom Taxonomy
+    if ($item->type == 'taxonomy') {
+        $object = get_term($item->object_id, $item->object);
+
+        // Check count, if more than 0 display count
+        if ($object->count > 0) {
+            //$output .= "<span class='menu-item-count'>".$object->count."</span>";
+            $output_new = '';
+            $output_split = str_split($output, strpos($output, '</a>'));
+            $output_new .= $output_split[0] . "<span class='menu-item-count'> (" . $object->count . ")</span>" . $output_split[1];
+            $output = $output_new;
+        }
+    }
+
+    return $output;
+}
+
+# удаляем лишнюю информацию из head страницы
+remove_action( 'wp_head', 'feed_links_extra', 3 );
+remove_action( 'wp_head', 'feed_links', 2 );
+remove_action( 'wp_head', 'rsd_link' );
+remove_action( 'wp_head', 'wlwmanifest_link' );
+remove_action( 'wp_head', 'index_rel_link' );
+remove_action( 'wp_head', 'parent_post_rel_link', 10, 0 );
+remove_action( 'wp_head', 'start_post_rel_link', 10, 0 );
+remove_action( 'wp_head', 'adjacent_posts_rel_link', 10, 0 );
+remove_action( 'wp_head', 'wp_generator' );
+
+# выводим время генерации, запросы и потребление памяти
+function usage(){
+    printf( ('SQL запросов:%d. Время генерации:%s сек. Потребление памяти:'), get_num_queries(), timer_stop(0, 3) );
+    if ( function_exists('memory_get_usage') ) echo round( memory_get_usage()/1024/1024, 2 ) . ' mb ';
+}
+//add_filter('admin_footer_text', 'usage');
+//add_filter('wp_footer', 'usage');
+
+/* Меняем картинку логотипа WP на странице входа */
+function my_login_logo(){
+    echo '<style type="text/css">#login h1 a { background: url('. get_bloginfo('template_directory') .'/images/favicon.png) no-repeat 0 0 !important; }</style>';
+}
+add_action('login_head', 'my_login_logo');
+add_filter( 'login_headerurl', create_function('', 'return get_home_url();') );
+add_filter( 'login_headertitle', create_function('', 'return false;') );
+
+
+/* Open Graph Tags */
+function custom_jetpack_default_image() {
+    return get_stylesheet_directory_uri() . '/images/og_image.jpg';
+}
+add_filter( 'jetpack_open_graph_image_default', 'custom_jetpack_default_image' );
+
+/* Скроем поле сайт */
+function remove_comment_fields($fields) {
+    unset($fields['url']);
+    return $fields;
+}
+add_filter('comment_form_default_fields', 'remove_comment_fields');
 ?>

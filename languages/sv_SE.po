@@ -88,7 +88,7 @@ msgstr "Arkiv"
 #: search.php:63
 #, php-format
 #@ rams
-msgid "(page %1$s of %2$s)"
+msgid "(page %s of %s)"
 msgstr "(sida %s av %s)"
 
 #: archive.php:65
@@ -220,7 +220,7 @@ msgstr "Vi kunde inte hitta några inlägg som matchar din sökning. Vänligen f
 #: index.php:19
 #, php-format
 #@ rams
-msgid "page %1$s of %2$s"
+msgid "Page %s of %s"
 msgstr "Sida %s av %s"
 
 #: search.php:11
