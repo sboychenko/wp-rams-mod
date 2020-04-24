@@ -1575,7 +1575,9 @@ li.comment { position: relative; }
 
 
 .comment-form p { margin-bottom: 30px; }
-.comment-form .form-submit { margin-bottom: 0; }
+.comment-form .form-submit {
+	margin: 10px 0 0;
+}
 
 .comment-form-author,
 .comment-form-email {
@@ -2299,4 +2301,14 @@ li.comment { position: relative; }
 .olMap {
 	width: 100% !important;
 	margin-bottom: 1.3em;
+}
+
+
+
+.post-inner .post-content .ext::after {
+	color: #aaaaaa;
+	content: '\f35d';
+	font-weight: 900;
+	font-family: "Font Awesome 5 Free", serif;
+	margin-left: 5px;
 }

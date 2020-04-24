@@ -60,7 +60,7 @@ if ( ! function_exists( 'rams_load_javascript_files' ) ) {
 		if ( !is_admin() ) {
 			wp_register_script( 'rams_global', get_template_directory_uri() . '/js/global.js', array( 'jquery' ), '', true );
 			wp_register_script( 'rams_flexslider', get_template_directory_uri() . '/js/flexslider.min.js', array( 'jquery' ), '', true );
-			wp_register_script('rams_fontawesome', 'https://use.fontawesome.com/4c4b094aad.js', array('jquery'), '', true);
+			wp_register_script('rams_fontawesome', 'https://kit.fontawesome.com/c9e5f4324b.js', array('jquery'), '', true);
 
 			wp_enqueue_script( 'rams_flexslider' );
 			wp_enqueue_script( 'rams_global' );
