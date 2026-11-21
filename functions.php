@@ -610,13 +610,13 @@ if ( ! function_exists( 'rams_block_editor_styles' ) ) :
 
 		if ( 'off' !== $load_fonts ) {
 
-			wp_register_style( 'rams-block-editor-styles-font', get_theme_file_uri( '/assets/fonts/editor.css' ), array(), wp_get_theme( get_template() )->get( 'Version' ) );
+			wp_register_style( 'rams-block-editor-styles-font', get_theme_file_uri( '/assets/fonts/site.css' ), array(), wp_get_theme( get_template() )->get( 'Version' ) );
 			$dependencies[] = 'rams-block-editor-styles-font';
 
 		}
 
 		// Enqueue the editor styles
-		wp_enqueue_style( 'rams-block-editor-styles', get_theme_file_uri( '/rams-gutenberg-editor-style.css' ), $dependencies, '1.0', 'all' );
+		wp_enqueue_style( 'rams-block-editor-styles', get_theme_file_uri( '/rams-gutenberg-editor-style.css' ), $dependencies, '1.1', 'all' );
 
 	}
 	add_action( 'enqueue_block_assets', 'rams_block_editor_styles', 1 );

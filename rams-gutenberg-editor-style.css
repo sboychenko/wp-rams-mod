@@ -9,9 +9,10 @@
 	font-size: 22px;
 }
 
+.editor-styles-wrapper,
 .editor-rich-text__tinymce {
 	color: #444;
-	font-family: 'Crimson Text', 'Times New Roman', 'Times', serif;
+	font-family: 'Roboto', 'Times New Roman', 'Times', serif;
 	-webkit-font-smoothing: antialiased;
 }
 
@@ -42,9 +43,14 @@
 
 /* Typography --------------------------------------------- */
 
+.editor-styles-wrapper .wp-block-post-title,
+.editor-styles-wrapper .wp-block-heading {
+	font-family: 'Exo 2', sans-serif;
+}
+
 .editor-post-title__block .editor-post-title__input {
 	color: #272F38;
-	font-family: 'Montserrat', sans-serif !important;
+	font-family: 'Exo 2', sans-serif !important;
 	font-size: 36px;
 	font-weight: 700;
 	line-height: 1.2;
@@ -76,7 +82,7 @@
 .editor-styles-wrapper .wp-block-heading h5,
 .editor-styles-wrapper .wp-block-heading h6 {
 	color: #333;
-	font-family: 'Montserrat', sans-serif !important;
+	font-family: 'Exo 2', sans-serif !important;
 	font-weight: 700;
 	line-height: 1.2 !important;
 	margin: 50px 0 20px;
@@ -194,7 +200,7 @@ table.wp-block-table {
 	border-collapse: collapse;
     border-spacing: 0;
 	empty-cells: show;
-	font-family: 'Montserrat', sans-serif !important;
+	font-family: 'Exo 2', sans-serif !important;
     font-size: 16px;
     margin-bottom: 1.1em;
     width: 100%;
@@ -274,7 +280,7 @@ hr.wp-block-separator {
 .wp-block-file {
 	background: rgba( 0, 0, 0, 0.05 );
 	border-radius: 4px;
-	font-family: 'Montserrat', sans-serif !important;
+	font-family: 'Exo 2', sans-serif !important;
 	font-size: 20px;
 	padding: 15px 20px;
 }
@@ -362,7 +368,7 @@ cite,
 .wp-block-quote.is-style-large cite, 
 .wp-block-quote.is-style-large footer {
 	color: #666;
-	font-family: 'Montserrat', sans-serif !important;
+	font-family: 'Exo 2', sans-serif !important;
 	font-size: 14px;
 	font-style: normal;
 	font-weight: 700;
@@ -420,7 +426,7 @@ pre.wp-block-verse {
 .wp-block-button .wp-block-button__link,
 .wp-block-button .wp-block-button__link.mce-content-body {
 	border-radius: 4px;
-	font-family: 'Montserrat', sans-serif !important;
+	font-family: 'Exo 2', sans-serif !important;
 	font-size: 16px;
 	font-weight: 600;
 	line-height: 1.1;
