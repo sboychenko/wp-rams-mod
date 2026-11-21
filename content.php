@@ -41,11 +41,17 @@
 		    	    
 		</div><!-- .post-header -->
 
-		<?php if ( get_the_content() ) : ?>
+		<?php if ( is_search() || get_the_content() ) : ?>
 		
 			<div class="post-content">
 			
-				<?php the_content(); ?>
+				<?php
+				if ( is_search() ) {
+					the_excerpt();
+				} else {
+					the_content();
+				}
+				?>
 			
 			</div><!-- .post-content -->
 			

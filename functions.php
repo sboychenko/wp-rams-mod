@@ -25,7 +25,8 @@ if ( ! function_exists( 'rams_setup' ) ) {
 		add_theme_support( 'infinite-scroll', array(
 			'container' => 'posts',
 			'footer'    => 'wrapper',
-			'type'      => 'click'
+			'type'      => 'click',
+			'render'    => 'rams_infinite_scroll_render',
 		) );
 
 		// Add nav menu
@@ -39,6 +40,35 @@ if ( ! function_exists( 'rams_setup' ) ) {
 	}
 	add_action( 'after_setup_theme', 'rams_setup' );
 
+}
+
+
+/* ---------------------------------------------------------------------------------------------
+   JETPACK INFINITE SCROLL
+   --------------------------------------------------------------------------------------------- */
+
+if ( ! function_exists( 'rams_infinite_scroll_render' ) ) {
+	function rams_infinite_scroll_render() {
+		while ( have_posts() ) {
+			the_post();
+			get_template_part( 'content', get_post_format() );
+		}
+
+		// Jetpack calls wp_head() after rendering. Keep the enqueue hooks running
+		// while discarding their HTML from the response containing the posts.
+		add_action( 'wp_head', 'rams_infinite_scroll_head_buffer_start', -99999 );
+		add_action( 'wp_head', 'rams_infinite_scroll_head_buffer_end', PHP_INT_MAX );
+	}
+}
+
+function rams_infinite_scroll_head_buffer_start() {
+	ob_start();
+}
+
+function rams_infinite_scroll_head_buffer_end() {
+	ob_end_clean();
+	remove_action( 'wp_head', 'rams_infinite_scroll_head_buffer_start', -99999 );
+	remove_action( 'wp_head', 'rams_infinite_scroll_head_buffer_end', PHP_INT_MAX );
 }
 
 
@@ -80,12 +110,11 @@ if ( ! function_exists( 'rams_load_style' ) ) {
 			 * supported by the theme fonts, translate this to 'off'. Do not translate
 			 * into your own language.
 			 */
-			$google_fonts = _x( 'on', 'Google Fonts: on or off', 'rams' );
+			$load_fonts = _x( 'on', 'Google Fonts: on or off', 'rams' );
 
-			if ( 'off' !== $google_fonts ) {
+			if ( 'off' !== $load_fonts ) {
 
-				// Register Google Fonts
-				wp_register_style( 'rams_googleFonts', 'https://fonts.googleapis.com/css?family=Exo+2:400,700|Roboto:400,700,400i,700i&subset=cyrillic', false, 1.0, 'all' );
+				wp_register_style( 'rams_googleFonts', get_theme_file_uri( '/assets/fonts/site.css' ), array(), wp_get_theme( get_template() )->get( 'Version' ) );
 				$dependencies[] = 'rams_googleFonts';
 
 			}
@@ -115,12 +144,10 @@ if ( ! function_exists( 'rams_add_editor_styles' ) ) {
 		 * supported by the theme fonts, translate this to 'off'. Do not translate
 		 * into your own language.
 		 */
-		$google_fonts = _x( 'on', 'Google Fonts: on or off', 'rams' );
+		$load_fonts = _x( 'on', 'Google Fonts: on or off', 'rams' );
 
-		if ( 'off' !== $google_fonts ) {
-
-			$font_url = 'https://fonts.googleapis.com/css?family=Exo+2:400,700|Roboto:400,700,400i,700i&subset=cyrillic';
-			add_editor_style( str_replace( ',', '%2C', $font_url ) );
+		if ( 'off' !== $load_fonts ) {
+			add_editor_style( 'assets/fonts/site.css' );
 
 		}
 
@@ -565,6 +592,10 @@ if ( ! function_exists( 'rams_block_editor_styles' ) ) :
 
 	function rams_block_editor_styles() {
 
+		if ( ! is_admin() ) {
+			return;
+		}
+
 		$dependencies = array();
 
 		/**
@@ -572,12 +603,11 @@ if ( ! function_exists( 'rams_block_editor_styles' ) ) :
 		 * supported by the theme fonts, translate this to 'off'. Do not translate
 		 * into your own language.
 		 */
-		$google_fonts = _x( 'on', 'Google Fonts: on or off', 'rams' );
+		$load_fonts = _x( 'on', 'Google Fonts: on or off', 'rams' );
 
-		if ( 'off' !== $google_fonts ) {
+		if ( 'off' !== $load_fonts ) {
 
-			// Register Google Fonts
-			wp_register_style( 'rams-block-editor-styles-font', 'https://fonts.googleapis.com/css?family=Montserrat:400,500,600,700|Crimson+Text:400,700,400italic,700italic', false, 1.0, 'all' );
+			wp_register_style( 'rams-block-editor-styles-font', get_theme_file_uri( '/assets/fonts/editor.css' ), array(), wp_get_theme( get_template() )->get( 'Version' ) );
 			$dependencies[] = 'rams-block-editor-styles-font';
 
 		}
@@ -586,7 +616,7 @@ if ( ! function_exists( 'rams_block_editor_styles' ) ) :
 		wp_enqueue_style( 'rams-block-editor-styles', get_theme_file_uri( '/rams-gutenberg-editor-style.css' ), $dependencies, '1.0', 'all' );
 
 	}
-	add_action( 'enqueue_block_editor_assets', 'rams_block_editor_styles', 1 );
+	add_action( 'enqueue_block_assets', 'rams_block_editor_styles', 1 );
 
 endif;
 
