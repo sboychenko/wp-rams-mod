@@ -10,7 +10,7 @@ jQuery(document).ready(function($) {
 	
 	
 	// Hide mobile-menu > 960
-	$(window).resize(function() {
+	$(window).on("resize", function() {
 		if ($(window).width() > 960) {
 			$(".nav-toggle").removeClass("active");
 			$(".mobile-menu").hide();
@@ -26,34 +26,24 @@ jQuery(document).ready(function($) {
 	});
 	
 	
-	// Load Flexslider
-    $(".flexslider").flexslider({
-        animation: "slide",
-        controlNav: false,
-        prevText: "",
-        nextText: "",
-        smoothHeight: true   
-    });
-    
-    
     // Post meta tabs
-    $('.tab-selector a').click(function() {
+    $('.tab-selector a').on("click", function() {
     	$('.tab-selector a').removeClass('active');
 		$('.post-meta-tabs .tab').hide(); 
 		return false;
     });
     
-    $('.tab-selector .tab-comments').click(function() {
+    $('.tab-selector .tab-comments').on("click", function() {
     	$(this).addClass('active');
 		$('.post-meta-tabs .tab-comments').show(); 
     });
     
-    $('.tab-selector .tab-post-meta').click(function() {
+    $('.tab-selector .tab-post-meta').on("click", function() {
     	$(this).addClass('active');
 		$('.post-meta-tabs .tab-post-meta').show(); 
     });
     
-    $('.tab-selector .tab-author-meta').click(function() {
+    $('.tab-selector .tab-author-meta').on("click", function() {
     	$(this).addClass('active');
 		$('.post-meta-tabs .tab-author-meta').show(); 
     });
@@ -81,12 +71,12 @@ jQuery(document).ready(function($) {
 
 	resizeVideo(vidSelector);
 
-	$(window).resize(function() {
+	$(window).on("resize", function() {
 		resizeVideo(vidSelector);
 	});
 
 	// top scroll
-    $(window).scroll(function () {
+    $(window).on("scroll", function () {
         if ($(this)
                 .scrollTop() > 100) {
             $('.topScroll')
@@ -106,18 +96,40 @@ jQuery(document).ready(function($) {
 	
 });
 
-// After Jetpack Infinite Scroll posts have loaded
-( function( $ ) {
-	$( document.body ).on( 'post-load', function () {
-		
-		// Run Flexslider
-		$(".flexslider").flexslider({
-		    animation: "slide",
-		    controlNav: false,
-		    prevText: "",
-		    nextText: "",
-		    smoothHeight: true   
+// Initialize galleries on first render and after Jetpack Infinite Scroll appends posts.
+jQuery(function ($) {
+	function initializeGalleries() {
+		document.querySelectorAll('.rams-gallery:not(.rams-gallery-ready)').forEach(function (gallery) {
+			var navigation = gallery.querySelector('.rams-gallery-nav');
+
+			if (!navigation) {
+				return;
+			}
+
+			var slides = gallery.querySelectorAll('.slides > li');
+			var current = 0;
+
+			function move(step) {
+				slides[current].hidden = true;
+				current = (current + step + slides.length) % slides.length;
+				slides[current].hidden = false;
+			}
+
+			slides.forEach(function (slide, index) {
+				slide.hidden = index !== current;
+			});
+
+			navigation.querySelector('.rams-gallery-prev').addEventListener('click', function () {
+				move(-1);
+			});
+			navigation.querySelector('.rams-gallery-next').addEventListener('click', function () {
+				move(1);
+			});
+			gallery.classList.add('rams-gallery-ready');
+			navigation.hidden = false;
 		});
-		
-	} );
-} )( jQuery );
+	}
+
+	initializeGalleries();
+	$(document.body).on('post-load', initializeGalleries);
+});

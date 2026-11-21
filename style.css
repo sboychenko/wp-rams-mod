@@ -3,7 +3,8 @@
 	Theme Name: Rams Mod 2
     Text Domain: ramsmod2
 	Theme URI: https://www.andersnoren.se/teman/rams-wordpress-theme/
-	Version: 1.25.1
+	Version: 1.25.2
+	Update URI: false
 	Description: A clean, minimalist and responsive theme for bloggers. Features responsive and retina-ready design, support for the gallery and quote post formats, custom accent color support, Jetpack infinite scroll integration, editor styles and translation ready code. Included translation: Swedish/svenska. Demo: http://www.andersnoren.se/themes/rams/
 	Tags: blog, two-columns, left-sidebar, custom-colors, custom-menu, editor-style, featured-images, post-formats, sticky-post, theme-options, threaded-comments, translation-ready
 	Author: Anders Norén & Sergey Boychenko
@@ -149,7 +150,7 @@ body a {
 
 .post-title a,
 .format-standard .featured-media a img,
-.flex-direction-nav a,
+.rams-gallery-nav button,
 .post-quote,
 #infinite-handle span,
 .comment-form input,
@@ -302,9 +303,9 @@ body a {
 
 .blog-title span {
 	color: red;
-	margin-left: -50px;
-	margin-right: -50px;
+	margin: 0px -50px;
 	font-size: 1em;
+	display: inline-block;
 }
 
 /* Main menu --------------------------------------- */
@@ -365,8 +366,24 @@ body a {
 
 .credits a:hover { color: #fff; }
 
+.rams-social-icon {
+	display: inline-block;
+	width: 1em;
+	height: 1em;
+	vertical-align: -0.125em;
+	background-color: currentColor;
+	mask: var(--rams-icon) center / contain no-repeat;
+}
+
+.rams-icon-telegram { --rams-icon: url(images/icons/font-awesome/telegram.svg); }
+.rams-icon-instagram { --rams-icon: url(images/icons/font-awesome/instagram.svg); }
+.rams-icon-square-youtube { --rams-icon: url(images/icons/font-awesome/square-youtube.svg); }
+.rams-icon-linkedin { --rams-icon: url(images/icons/font-awesome/linkedin.svg); }
+.rams-icon-github { --rams-icon: url(images/icons/font-awesome/github.svg); }
+
+
 .credits span a {
-	font-size: 40px;
+	font-size: 32px;
 }
 
 img#wpstats { display: none !important } /* silly wp stats */
@@ -460,12 +477,16 @@ img#wpstats { display: none !important } /* silly wp stats */
 /* Format gallery --------------------------------------- */
 
 
-.flexslider {
+.rams-gallery {
 	position: relative;
 	overflow: hidden;
 }
 
-.flex-direction-nav {
+.rams-gallery [hidden] {
+	display: none;
+}
+
+.rams-gallery-nav {
 	position: absolute;
 	top: 50%;
 	right: 0;
@@ -473,8 +494,11 @@ img#wpstats { display: none !important } /* silly wp stats */
 	margin-top: -25px;
 }
 
-.flex-direction-nav a {
+.rams-gallery-nav button {
 	display: block;
+	border: 0;
+	padding: 0;
+	cursor: pointer;
 	width: 50px;
 	height: 50px;
 	background: #444 no-repeat center;
@@ -482,20 +506,20 @@ img#wpstats { display: none !important } /* silly wp stats */
 	position: absolute;
 }
 
-.flex-direction-nav .flex-prev {
+.rams-gallery-nav .rams-gallery-prev {
 	left: 0;
 	background-image: url(images/icons/chevron-left_w.png);
 }
 
-.flex-direction-nav .flex-next {
+.rams-gallery-nav .rams-gallery-next {
 	right: 0;
 	background-image: url(images/icons/chevron-right_w.png);
 }
 
-.flex-direction-nav a:hover { background-color: #6AA897; }
+.rams-gallery-nav button:hover { background-color: #6AA897; }
 
-.flex-direction-nav .flex-prev:active { margin-left: -2px; }
-.flex-direction-nav .flex-next:active { margin-right: -2px; }
+.rams-gallery-nav .rams-gallery-prev:active { margin-left: -2px; }
+.rams-gallery-nav .rams-gallery-next:active { margin-right: -2px; }
 
 
 /* Format quote --------------------------------------- */
@@ -834,7 +858,7 @@ abbr, acronym { cursor: help; }
 .post-content pre,
 .post-content tt {
 	/*font-size: 15px;*/
-	background: #EEE;
+	/*background: #EEE;*/
 	font-family: Menlo, Monaco, monospace;
 }
 
@@ -916,7 +940,7 @@ abbr, acronym { cursor: help; }
 	word-wrap: break-word;       /* Internet Explorer 5.5+ */
 	line-height: 140%;
 	padding: 2% 2.5%;
-	background: #FAFAFA;
+	/*background: #FAFAFA;*/
 	border: 1px solid #DDD;
 	color: #333;
 	font-size: 0.7em;
@@ -999,8 +1023,6 @@ abbr, acronym { cursor: help; }
 	text-transform: uppercase;
 	color: #666;
 	padding: 10px;
-	text-transform: uppercase;
-	text-align: center;
 }
 
 /* GUTENBERG CLASSES */
@@ -1737,11 +1759,14 @@ li.comment { position: relative; }
 	z-index: 555;
 }
 
-.topScroll i {
-	font-size: 30px;
-	line-height: 26px;
-	margin: 0 6px;
-	color: #fff;
+.topScroll span {
+	display: block;
+	width: 10px;
+	height: 10px;
+	margin: 12px;
+	border: solid #fff;
+	border-width: 2px 0 0 2px;
+	transform: translateY(2px) rotate(45deg);
 }
 
 .sidebar-inner {
@@ -1978,12 +2003,12 @@ li.comment { position: relative; }
 		font-size: 20px;
 		font-weight: 700;
 		color: rgba( 255, 255, 255, 0.25 );
-		margin-right: 3px;
+		margin-right: 6px;
 		display: inline;
 	}
 
 	.mobile-menu .credits_mobile span a {
-		font-size: 30px;
+		font-size: 32px;
 	}
 
 	.mobile-menu .credits_mobile a:hover {
@@ -2117,9 +2142,9 @@ li.comment { position: relative; }
 	
 	/* format gallery */
 	
-	.flex-direction-nav { margin-top: -16px; }
+	.rams-gallery-nav { margin-top: -16px; }
 	
-	.flex-direction-nav a { 
+	.rams-gallery-nav button { 
 		height: 32px;
 		width: 32px; 
 	}
@@ -2311,4 +2336,9 @@ li.comment { position: relative; }
 	font-weight: 900;
 	font-family: "Font Awesome 5 Free", serif;
 	margin-left: 5px;
+}
+
+p code {
+  background-color: #eee;
+  color: #444;
 }

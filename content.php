@@ -1,6 +1,6 @@
 <div id="post-<?php the_ID(); ?>" <?php post_class(); ?>>
 
-	<?php if ( has_post_thumbnail() ) : ?>
+	<?php if ( ! post_password_required() && has_post_thumbnail() ) : ?>
 	
 		<div class="featured-media">	
 			
@@ -35,6 +35,9 @@
 			<?php endif; ?>
 			
 		    <h2 class="post-title"><a href="<?php the_permalink(); ?>"><?php the_title(); ?></a></h2>
+		    <?php if (has_category()) : ?>
+				<p># <?php the_category(', '); ?></p>
+			<?php endif; ?>
 		    	    
 		</div><!-- .post-header -->
 

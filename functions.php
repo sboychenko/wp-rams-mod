@@ -35,12 +35,6 @@ if ( ! function_exists( 'rams_setup' ) ) {
 		// Make the theme translation ready
 		load_theme_textdomain( 'rams', get_template_directory() . '/languages' );
 
-		$locale = get_locale();
-		$locale_file = get_template_directory() . '/languages/$locale.php';
-
-		if ( is_readable( $locale_file ) ) {
-			require_once( $locale_file );
-		}
 
 	}
 	add_action( 'after_setup_theme', 'rams_setup' );
@@ -57,17 +51,10 @@ if ( ! function_exists( 'rams_load_javascript_files' ) ) {
 
 	function rams_load_javascript_files() {
 
-		if ( !is_admin() ) {
-			wp_register_script( 'rams_global', get_template_directory_uri() . '/js/global.js', array( 'jquery' ), '', true );
-			wp_register_script( 'rams_flexslider', get_template_directory_uri() . '/js/flexslider.min.js', array( 'jquery' ), '', true );
-			wp_register_script('rams_fontawesome', 'https://kit.fontawesome.com/c9e5f4324b.js', array('jquery'), '', true);
+		wp_enqueue_script( 'rams_global', get_template_directory_uri() . '/js/global.js', array( 'jquery' ), wp_get_theme( get_template() )->get( 'Version' ), true );
 
-			wp_enqueue_script( 'rams_flexslider' );
-			wp_enqueue_script( 'rams_global' );
-			wp_enqueue_script('rams_fontawesome');
-
-			if ( is_singular() && get_option( 'thread_comments' ) ) { wp_enqueue_script( 'comment-reply' ); }
-
+		if ( is_singular() && comments_open() && get_option( 'thread_comments' ) ) {
+			wp_enqueue_script( 'comment-reply' );
 		}
 	}
 	add_action( 'wp_enqueue_scripts', 'rams_load_javascript_files' );
@@ -98,16 +85,16 @@ if ( ! function_exists( 'rams_load_style' ) ) {
 			if ( 'off' !== $google_fonts ) {
 
 				// Register Google Fonts
-				wp_register_style( 'rams_googleFonts', '//fonts.googleapis.com/css?family=Exo+2:400,700|Roboto:400,700,400i,700i&subset=cyrillic', false, 1.0, 'all' );
+				wp_register_style( 'rams_googleFonts', 'https://fonts.googleapis.com/css?family=Exo+2:400,700|Roboto:400,700,400i,700i&subset=cyrillic', false, 1.0, 'all' );
 				$dependencies[] = 'rams_googleFonts';
 
 			}
 
-			wp_enqueue_style( 'rams_style', get_stylesheet_uri(), $dependencies );
+			wp_enqueue_style( 'rams_style', get_stylesheet_uri(), $dependencies, wp_get_theme()->get( 'Version' ) );
 
 		}
 	}
-	add_action( 'wp_print_styles', 'rams_load_style' );
+	add_action( 'wp_enqueue_scripts', 'rams_load_style' );
 
 }
 
@@ -132,7 +119,7 @@ if ( ! function_exists( 'rams_add_editor_styles' ) ) {
 
 		if ( 'off' !== $google_fonts ) {
 
-			$font_url = '//fonts.googleapis.com/css?family=Exo+2:400,700|Roboto:400,700,400i,700i&subset=cyrillic';
+			$font_url = 'https://fonts.googleapis.com/css?family=Exo+2:400,700|Roboto:400,700,400i,700i&subset=cyrillic';
 			add_editor_style( str_replace( ',', '%2C', $font_url ) );
 
 		}
@@ -247,7 +234,7 @@ if ( ! function_exists( 'rams_admin_css' ) ) {
 
 
 /* ---------------------------------------------------------------------------------------------
-   FLEXSLIDER OUTPUT
+   GALLERY OUTPUT
    --------------------------------------------------------------------------------------------- */
 
 
@@ -255,39 +242,42 @@ if ( ! function_exists( 'rams_flexslider' ) ) {
 
 	function rams_flexslider( $size ) {
 
-		$attachment_parent = is_page() ? $post->ID : get_the_ID();
+		$post_id = get_the_ID();
+
+		if ( ! $post_id || post_password_required( $post_id ) ) {
+			return;
+		}
 
 		if ( $images = get_posts( array(
-			'post_parent'    => $attachment_parent,
+			'post_parent'    => $post_id,
 			'post_type'      => 'attachment',
 			'numberposts'    => -1, // show all
 			'orderby'        => 'menu_order',
 			'order'          => 'ASC',
-			'post_status'    => null,
+			'post_status'    => 'inherit',
 			'post_mime_type' => 'image',
 		) ) ) { ?>
 
-			<div class="flexslider">
+			<div class="rams-gallery">
 
 				<ul class="slides">
 
-					<?php foreach( $images as $image ) :
-
-						global $attachment_id;
-
-						$default_attr = array(
-							'alt'   => trim(strip_tags( get_post_meta( $attachment_id, '_wp_attachment_image_alt', true ) ) ),
-						);
-
-						$attimg = wp_get_attachment_image( $image->ID, $size, $default_attr ); ?>
+					<?php foreach ( $images as $image ) : ?>
 
 						<li>
-							<?php echo $attimg; ?>
+							<?php echo wp_get_attachment_image( $image->ID, $size ); ?>
 						</li>
 
 					<?php endforeach; ?>
 
 				</ul>
+
+				<?php if ( count( $images ) > 1 ) : ?>
+					<div class="rams-gallery-nav" hidden>
+						<button type="button" class="rams-gallery-prev" aria-label="<?php esc_attr_e( 'Previous image', 'rams' ); ?>"></button>
+						<button type="button" class="rams-gallery-next" aria-label="<?php esc_attr_e( 'Next image', 'rams' ); ?>"></button>
+					</div>
+				<?php endif; ?>
 
 			</div><?php
 
@@ -312,7 +302,7 @@ if ( ! function_exists( 'rams_comment' ) ) {
 
 			<li <?php comment_class(); ?> id="comment-<?php comment_ID(); ?>">
 
-				<?php __( 'Pingback:', 'rams' ); ?> <?php comment_author_link(); ?> <?php edit_comment_link( __( '(Edit)', 'rams' ), '<span class="edit-link">', '</span>' ); ?>
+				<?php esc_html_e( 'Pingback:', 'rams' ); ?> <?php comment_author_link(); ?> <?php edit_comment_link( __( '(Edit)', 'rams' ), '<span class="edit-link">', '</span>' ); ?>
 
 			</li>
 		<?php
@@ -334,7 +324,7 @@ if ( ! function_exists( 'rams_comment' ) ) {
 
 						<h4><?php echo get_comment_author_link(); ?></h4>
 
-						<p class="comment-date"><a class="comment-date-link" href="<?php echo esc_url( get_comment_link( $comment->comment_ID ) ) ?>" title="<?php echo get_comment_date() . ' at ' . get_comment_time(); ?>"><?php echo get_comment_date() . '<span> &mdash; ' . get_comment_time() . '</span>'; ?></a></p>
+						<p class="comment-date"><a class="comment-date-link" href="<?php echo esc_url( get_comment_link( $comment->comment_ID ) ) ?>" title="<?php echo esc_attr( get_comment_date() . ' at ' . get_comment_time() ); ?>"><?php echo esc_html( get_comment_date() ) . '<span> &mdash; ' . esc_html( get_comment_time() ) . '</span>'; ?></a></p>
 
 					</div>
 
@@ -342,7 +332,7 @@ if ( ! function_exists( 'rams_comment' ) ) {
 
 						<?php if ( '0' == $comment->comment_approved ) : ?>
 
-							<p class="comment-awaiting-moderation"><?php __( 'Your comment is awaiting moderation.', 'rams' ); ?></p>
+							<p class="comment-awaiting-moderation"><?php esc_html_e( 'Your comment is awaiting moderation.', 'rams' ); ?></p>
 
 						<?php endif; ?>
 
@@ -424,7 +414,7 @@ class Rams_Customize {
 			self::rams_generate_css( 'body a:hover', 'color', 'accent_color' );
 			self::rams_generate_css( '.sidebar', 'background', 'accent_color' );
 
-			self::rams_generate_css( '.flex-direction-nav a:hover', 'background-color', 'accent_color' );
+			self::rams_generate_css( '.rams-gallery-nav button:hover', 'background-color', 'accent_color' );
 			self::rams_generate_css( 'a.post-quote:hover', 'background', 'accent_color' );
 			self::rams_generate_css( '.post-title a:hover', 'color', 'accent_color' );
 
@@ -459,12 +449,12 @@ class Rams_Customize {
 	}
 
 	public static function rams_live_preview() {
-		wp_enqueue_script( 'rams-themecustomizer', get_template_directory_uri() . '/js/theme-customizer.js', array(  'jquery', 'customize-preview' ), '', true );
+		wp_enqueue_script( 'rams-themecustomizer', get_template_directory_uri() . '/js/theme-customizer.js', array( 'jquery', 'customize-preview' ), wp_get_theme( get_template() )->get( 'Version' ), true );
 	}
 
 	public static function rams_generate_css( $selector, $style, $mod_name, $prefix='', $postfix='', $echo=true ) {
 		$return = '';
-		$mod = get_theme_mod( $mod_name );
+		$mod = sanitize_hex_color( get_theme_mod( $mod_name ) );
 		if ( ! empty( $mod ) ) {
 			$return = sprintf( '%s { %s: %s; }', $selector, $style, $prefix.$mod.$postfix );
 			if ( $echo ) {
@@ -496,7 +486,7 @@ if ( ! function_exists( 'rams_add_gutenberg_features' ) ) :
 
 		/* Gutenberg Palette --------------------------------------- */
 
-		$accent_color = get_theme_mod( 'accent_color' ) ? get_theme_mod( 'accent_color' ) : '#6AA897';
+		$accent_color = sanitize_hex_color( get_theme_mod( 'accent_color' ) ) ?: '#6AA897';
 
 		add_theme_support( 'editor-color-palette', array(
 			array(
@@ -587,7 +577,7 @@ if ( ! function_exists( 'rams_block_editor_styles' ) ) :
 		if ( 'off' !== $google_fonts ) {
 
 			// Register Google Fonts
-			wp_register_style( 'rams-block-editor-styles-font', '//fonts.googleapis.com/css?family=Montserrat:400,500,600,700|Crimson+Text:400,700,400italic,700italic', false, 1.0, 'all' );
+			wp_register_style( 'rams-block-editor-styles-font', 'https://fonts.googleapis.com/css?family=Montserrat:400,500,600,700|Crimson+Text:400,700,400italic,700italic', false, 1.0, 'all' );
 			$dependencies[] = 'rams-block-editor-styles-font';
 
 		}
@@ -602,24 +592,21 @@ endif;
 
 
 ////// CUSTOM Functions
-add_action('walker_nav_menu_start_el', 'nav_menu_post_count', 10, 4);
-function nav_menu_post_count($output, $item, $depth, $args)
-{
-    // Check if the item is a Category or Custom Taxonomy
-    if ($item->type == 'taxonomy') {
-        $object = get_term($item->object_id, $item->object);
+add_filter( 'walker_nav_menu_start_el', 'nav_menu_post_count', 10, 2 );
+function nav_menu_post_count( $output, $item ) {
+	if ( 'taxonomy' !== $item->type ) {
+		return $output;
+	}
 
-        // Check count, if more than 0 display count
-        if ($object->count > 0) {
-            //$output .= "<span class='menu-item-count'>".$object->count."</span>";
-            $output_new = '';
-            $output_split = str_split($output, strpos($output, '</a>'));
-            $output_new .= $output_split[0] . "<span class='menu-item-count'> (" . $object->count . ")</span>" . $output_split[1];
-            $output = $output_new;
-        }
-    }
+	$term = get_term( $item->object_id, $item->object );
+	$link_end = strpos( $output, '</a>' );
 
-    return $output;
+	if ( ! $term instanceof WP_Term || $term->count <= 0 || false === $link_end ) {
+		return $output;
+	}
+
+	$count = sprintf( '<span class="menu-item-count"> (%d)</span>', $term->count );
+	return substr_replace( $output, $count, $link_end, 0 );
 }
 
 # удаляем лишнюю информацию из head страницы
@@ -642,13 +629,15 @@ function usage(){
 //add_filter('wp_footer', 'usage');
 
 /* Меняем картинку логотипа WP на странице входа */
-function my_login_logo(){
-    echo '<style type="text/css">#login h1 a { background: url('. get_bloginfo('template_directory') .'/images/favicon.png) no-repeat 0 0 !important; }</style>';
+function my_login_logo() {
+	$logo_url = esc_url_raw( get_template_directory_uri() . '/images/favicon.png' );
+	wp_add_inline_style( 'login', '#login h1 a { background: url("' . $logo_url . '") no-repeat 0 0 !important; }' );
 }
-add_action('login_head', 'my_login_logo');
-add_filter( 'login_headerurl', create_function('', 'return get_home_url();') );
-add_filter( 'login_headertitle', create_function('', 'return false;') );
-
+add_action( 'login_enqueue_scripts', 'my_login_logo' );
+add_filter( 'login_headerurl', 'get_home_url_for_rams_login' );
+function get_home_url_for_rams_login() {
+	return home_url( '/' );
+}
 
 /* Open Graph Tags */
 function custom_jetpack_default_image() {
@@ -662,4 +651,3 @@ function remove_comment_fields($fields) {
     return $fields;
 }
 add_filter('comment_form_default_fields', 'remove_comment_fields');
-?>

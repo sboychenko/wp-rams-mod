@@ -40,7 +40,7 @@ get_header(); ?>
 
 							foreach( $archive_posts as $archive_post ) : ?>
 								<li>
-									<a href="<?php echo get_permalink( $archive_post->ID ); ?>"><?php echo get_the_title( $archive_post->ID );?> <span>(<?php the_time( get_option( 'date_format' ), $archive_post->ID ); ?>)</span>
+									<a href="<?php echo esc_url( get_permalink( $archive_post ) ); ?>"><?php echo esc_html( get_the_title( $archive_post ) ); ?> <span>(<?php  echo esc_html( get_the_date( '', $archive_post ) );  ?>)</span>
 									</a>
 								</li>
 							<?php endforeach; ?>
@@ -54,15 +54,24 @@ get_header(); ?>
 			            <h3><?php _e( 'Tags', 'rams' ); ?></h3>
 			            
 			            <ul>
-							<?php 
+							<?php
 							$tags = get_tags();
-			                
-			                if ( $tags ) {
-			                    foreach ( $tags as $tag ) {
-			                 	   echo '<li><a href="' . get_tag_link( $tag->term_id ) . '" title="' . sprintf( __( "View all posts in %s", 'rams' ), $tag->name ) . '" ' . '>' . $tag->name.'</a></li> ';
-			                    }
-			                }
-			                ?>
+							if ( ! is_wp_error( $tags ) ) {
+								foreach ( $tags as $tag ) {
+									$tag_url = get_tag_link( $tag->term_id );
+									if ( is_wp_error( $tag_url ) ) {
+										continue;
+									}
+
+									printf(
+										'<li><a href="%s" title="%s">%s</a></li>',
+										esc_url( $tag_url ),
+										esc_attr( sprintf( __( 'View all posts in %s', 'rams' ), $tag->name ) ),
+										esc_html( $tag->name )
+									);
+								}
+							}
+							?>
 			            </ul>
 			            
 			            <h3><?php _e( 'Contributors', 'rams' ); ?></h3>
