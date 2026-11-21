@@ -1,3 +1,10 @@
+<?php
+if ( post_password_required() ) {
+	get_template_part( 'content' );
+	return;
+}
+?>
+
 <div id="post-<?php the_ID(); ?>" <?php post_class(); ?>>
 	
 	<a class="post-quote" href="<?php the_permalink(); ?>">
@@ -13,7 +20,7 @@
 			$content_parts = get_extended( $content );
 			
 			// Output part before <!--more--> tag
-			echo $content_parts['main'];
+			echo wp_kses_post( $content_parts['main'] );
 			
 			?>
 		

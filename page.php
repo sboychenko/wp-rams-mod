@@ -6,9 +6,8 @@
 	
 		<div <?php post_class('post single'); ?>>
 		
-			<?php if ( has_post_thumbnail() ) : ?>
+			<?php if ( ! post_password_required() && has_post_thumbnail() ) : ?>
 			
-				<?php $thumb = wp_get_attachment_image_src( get_post_thumbnail_id($post->ID), 'thumbnail_size' ); $thumb_url = $thumb['0']; ?>
 		
 				<div class="featured-media">
 		

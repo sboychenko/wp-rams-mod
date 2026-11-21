@@ -7,18 +7,17 @@
 		<div class="section-inner">
 
 			<h4><?php if ( is_day() ) : ?>
-				<?php printf( __( 'Date: %s', 'rams' ), '' . get_the_date() . '' ); ?>
+				<?php printf( esc_html__( 'Date: %s', 'rams' ), esc_html( get_the_date() ) ); ?>
 			<?php elseif ( is_month() ) : ?>
 				<?php printf( __( 'Month: %s', 'rams' ), '' . get_the_date( _x( 'F Y', 'F = Month, Y = Year', 'rams' ) ) ); ?>
 			<?php elseif ( is_year() ) : ?>
 				<?php printf( __( 'Year: %s', 'rams' ), '' . get_the_date( _x( 'Y', 'Y = Year', 'rams' ) ) ); ?>
 			<?php elseif ( is_category() ) : ?>
-				<?php printf( __( 'Category: %s', 'rams' ), '' . single_cat_title( '', false ) . '' ); ?>
+				<?php printf( esc_html__( 'Category: %s', 'rams' ), esc_html( single_cat_title( '', false ) ) ); ?>
 			<?php elseif ( is_tag() ) : ?>
-				<?php printf( __( 'Tag: %s', 'rams' ), '' . single_tag_title( '', false ) . '' ); ?>
+				<?php printf( esc_html__( 'Tag: %s', 'rams' ), esc_html( single_tag_title( '', false ) ) ); ?>
 			<?php elseif ( is_author() ) : ?>
-				<?php $curauth = (isset($_GET['author_name'])) ? get_user_by('slug', $author_name) : get_userdata(intval($author)); ?>
-				<?php printf( __( 'Author: %s', 'rams' ), $curauth->display_name ); ?>
+				<?php printf( esc_html__( 'Author: %s', 'rams' ), esc_html( get_the_author_meta( 'display_name', get_queried_object_id() ) ) ); ?>
 			<?php else : ?>
 				<?php _e( 'Archive', 'rams' ); ?>
 			<?php endif; ?>
@@ -35,7 +34,7 @@
 			<?php
 				$tag_description = tag_description();
 				if ( ! empty( $tag_description ) )
-					echo apply_filters( 'tag_archive_meta', '<div class="tag-meta">' . $tag_description . '</div>' );
+					echo wp_kses_post( apply_filters( 'tag_archive_meta', '<div class="tag-meta">' . $tag_description . '</div>' ) );
 			?>
 		
 		</div> <!-- /section-inner -->

@@ -13,7 +13,7 @@ if ( have_comments() ) : ?>
 		<h2 class="comments-title fleft">
 		
 			<?php 
-			$comment_count = count( $wp_query->comments_by_type['comment'] );
+			$comment_count = count( $wp_query->comments_by_type['comment'] ?? array() );
 			echo $comment_count . ' ' . _n( 'Comment', 'Comments', $comment_count, 'rams' ); ?>
 			
 		</h2>

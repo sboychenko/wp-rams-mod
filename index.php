@@ -32,17 +32,17 @@
 			
 				<?php 
 				
-				echo $archive_title;
+				echo wp_kses_post( $archive_title );
 				
 				if ( $archive_subtitle ) : ?>
-					<span><?php echo $archive_subtitle; ?></span>
+					<span><?php echo esc_html( $archive_subtitle ); ?></span>
 				<?php endif; ?>
 				
 			</h4>
 
 			<?php
 			if ( term_description() ) {
-				echo apply_filters( 'tag_archive_meta', '<div class="tag-meta">' . term_description() . '</div>' );
+				echo wp_kses_post( apply_filters( 'tag_archive_meta', '<div class="tag-meta">' . term_description() . '</div>' ) );
 			}
 			?>
 			

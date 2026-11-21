@@ -481,7 +481,8 @@ class Rams_Customize {
 
 	public static function rams_generate_css( $selector, $style, $mod_name, $prefix='', $postfix='', $echo=true ) {
 		$return = '';
-		$mod = sanitize_hex_color( get_theme_mod( $mod_name ) );
+		$mod = get_theme_mod( $mod_name );
+		$mod = is_string( $mod ) ? sanitize_hex_color( $mod ) : null;
 		if ( ! empty( $mod ) ) {
 			$return = sprintf( '%s { %s: %s; }', $selector, $style, $prefix.$mod.$postfix );
 			if ( $echo ) {
@@ -513,7 +514,9 @@ if ( ! function_exists( 'rams_add_gutenberg_features' ) ) :
 
 		/* Gutenberg Palette --------------------------------------- */
 
-		$accent_color = sanitize_hex_color( get_theme_mod( 'accent_color' ) ) ?: '#6AA897';
+		$accent_color = get_theme_mod( 'accent_color' );
+		$accent_color = is_string( $accent_color ) ? sanitize_hex_color( $accent_color ) : null;
+		$accent_color = $accent_color ?: '#6AA897';
 
 		add_theme_support( 'editor-color-palette', array(
 			array(
@@ -664,10 +667,9 @@ function my_login_logo() {
 	wp_add_inline_style( 'login', '#login h1 a { background: url("' . $logo_url . '") no-repeat 0 0 !important; }' );
 }
 add_action( 'login_enqueue_scripts', 'my_login_logo' );
-add_filter( 'login_headerurl', 'get_home_url_for_rams_login' );
-function get_home_url_for_rams_login() {
+add_filter( 'login_headerurl', function () {
 	return home_url( '/' );
-}
+} );
 
 /* Open Graph Tags */
 function custom_jetpack_default_image() {

@@ -518,6 +518,11 @@ img#wpstats { display: none !important } /* silly wp stats */
 
 .rams-gallery-nav button:hover { background-color: #6AA897; }
 
+.rams-gallery-nav button:focus-visible {
+	outline: 2px solid #fff;
+	outline-offset: -4px;
+}
+
 .rams-gallery-nav .rams-gallery-prev:active { margin-left: -2px; }
 .rams-gallery-nav .rams-gallery-next:active { margin-right: -2px; }
 
@@ -2144,7 +2149,7 @@ li.comment { position: relative; }
 	
 	.rams-gallery-nav { margin-top: -16px; }
 	
-	.rams-gallery-nav button { 
+	.rams-gallery-nav button {
 		height: 32px;
 		width: 32px; 
 	}

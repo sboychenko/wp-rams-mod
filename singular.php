@@ -24,7 +24,7 @@
 						
 					</div><!-- .featured-media -->
 				
-				<?php elseif ( has_post_thumbnail() ) : ?>
+				<?php elseif ( ! post_password_required() && has_post_thumbnail() ) : ?>
 						
 					<div class="featured-media">
 			
@@ -74,7 +74,7 @@
 				
 					<div class="post-meta">
 					
-						<a class="post-meta-toggle" href="#" title="<?php _e( 'Show information about the post', 'rams' ); ?>">
+						<a class="post-meta-toggle" href="#" title="<?php esc_attr_e( 'Show information about the post', 'rams' ); ?>">
 						
 							<div class="post-meta-toggle-inner">
 						
@@ -122,8 +122,8 @@
 										
 										<p>
 											<strong><?php _e( 'Next', 'rams' ); ?></strong>
-											<a class="post-nav-newer" title="<?php _e( 'Next post', 'rams' ); echo ': ' . get_the_title( $next_post ); ?>" href="<?php echo get_permalink( $next_post->ID ); ?>">
-												<?php echo get_the_title( $next_post ); ?>
+											<a class="post-nav-newer" title="<?php echo esc_attr( __( 'Next post', 'rams' ) . ': ' . get_the_title( $next_post ) ); ?>" href="<?php echo esc_url( get_permalink( $next_post ) ); ?>">
+												<?php echo esc_html( get_the_title( $next_post ) ); ?>
 											</a>
 										</p>
 								
@@ -133,8 +133,8 @@
 									
 										<p>
 											<strong><?php _e( 'Previous', 'rams' ); ?></strong>
-											<a class="post-nav-older" title="<?php _e( 'Previous post', 'rams' ); echo ': ' . get_the_title( $prev_post ); ?>" href="<?php echo get_permalink( $prev_post->ID ); ?>">
-												<?php echo get_the_title( $prev_post ); ?>
+											<a class="post-nav-older" title="<?php echo esc_attr( __( 'Previous post', 'rams' ) . ': ' . get_the_title( $prev_post ) ); ?>" href="<?php echo esc_url( get_permalink( $prev_post ) ); ?>">
+												<?php echo esc_html( get_the_title( $prev_post ) ); ?>
 											</a>
 										</p>
 								

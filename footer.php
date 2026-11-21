@@ -1,8 +1,8 @@
 	</div><!-- .wrapper -->
 	
 </div><!-- .wrapper-inner -->
-<a href="#" class="topScroll" style="display: block;">
-    <i class="fa fa-angle-up"></i>
+<a href="#" class="topScroll" aria-label="<?php esc_attr_e( 'Back to top', 'rams' ); ?>">
+    <span aria-hidden="true"></span>
 </a>
 
 <div class="footer-wrapper" >

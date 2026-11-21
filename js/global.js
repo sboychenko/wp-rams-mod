@@ -108,6 +108,7 @@ jQuery(function ($) {
 
 			var slides = gallery.querySelectorAll('.slides > li');
 			var current = 0;
+			var touchStart = null;
 
 			function move(step) {
 				slides[current].hidden = true;
@@ -125,6 +126,23 @@ jQuery(function ($) {
 			navigation.querySelector('.rams-gallery-next').addEventListener('click', function () {
 				move(1);
 			});
+			gallery.addEventListener('touchstart', function (event) {
+				touchStart = event.touches.length === 1 ? event.touches[0] : null;
+			}, { passive: true });
+			gallery.addEventListener('touchend', function (event) {
+				if (!touchStart || event.touches.length) {
+					return;
+				}
+
+				var touchEnd = event.changedTouches[0];
+				var horizontal = touchEnd.clientX - touchStart.clientX;
+				var vertical = touchEnd.clientY - touchStart.clientY;
+				touchStart = null;
+
+				if (Math.abs(horizontal) >= 40 && Math.abs(horizontal) > Math.abs(vertical)) {
+					move(horizontal < 0 ? 1 : -1);
+				}
+			}, { passive: true });
 			gallery.classList.add('rams-gallery-ready');
 			navigation.hidden = false;
 		});

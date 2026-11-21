@@ -8,7 +8,7 @@
 			
 				<h4>
 			
-					<?php _e( 'Search results:', 'rams'); echo ' "' . get_search_query() . '"'; ?>
+					<?php esc_html_e( 'Search results:', 'rams' ); echo ' "' . esc_html( get_search_query( false ) ) . '"'; ?>
 				
 					<?php
 					$paged = (get_query_var('paged')) ? get_query_var('paged') : 1;
@@ -53,7 +53,7 @@
 		
 				<h4>
 			
-					<?php echo _e( 'Search results:', 'rams') . ' "' . get_search_query() . '"'; ?>
+					<?php esc_html_e( 'Search results:', 'rams' ); echo ' "' . esc_html( get_search_query( false ) ) . '"'; ?>
 				
 					<?php
 					$paged = (get_query_var('paged')) ? get_query_var('paged') : 1;

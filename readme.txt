@@ -2,7 +2,7 @@
 Contributors: Anlino
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=anders%40andersnoren%2ese&lc=US&item_name=Free%20WordPress%20Themes%20from%20Anders%20Noren&currency_code=USD&bn=PP%2dDonationsBF%3abtn_donateCC_LG%2egif%3aNonHosted
 Requires at least: 4.4
-Tested up to: 5.0
+Tested up to: 7.1
 Stable tag: trunk
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -52,9 +52,9 @@ Crimson Text
 License: SIL Open Font License, 1.1 
 Source: https://fonts.google.com/specimen/Crimson+Text
 
-Flexslider 2
-License: GPLv2 
-Source: http://flexslider.woothemes.com
+Font Awesome Free 7.3.1 (social icons)
+License: CC BY 4.0 (see images/icons/font-awesome/LICENSE.txt)
+Source: https://github.com/FortAwesome/Font-Awesome/releases/tag/7.3.1
 
 screenshot.png post image 
 License: CC0 Public Domain 
@@ -62,6 +62,12 @@ Source: http://www.unsplash.com
 
 
 == Changelog ==
+
+Version 1.25.2
+--------------
+- Respect WordPress password protection in quote and gallery previews and featured images.
+- Replace FlexSlider with gallery controls built into the theme and load social icons locally.
+- Escape dynamic template output and validate the saved accent color.
 
 Version 1.25 (2019-04-07)
 -------------------------
